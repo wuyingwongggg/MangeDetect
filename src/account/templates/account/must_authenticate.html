@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    body, html {
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Roboto', sans-serif; /* Use a more modern font */
+    }
+    
+    .container {
+        display: flex;
+        
+    }
+    
+    .image-side {
+        flex: 1;
+        background-image: url('/static/leftsidebg.jpg'); /* Adjust path as necessary */
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .auth-side {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+    }
+    
+    .auth-container {
+        background-color: white;
+        padding: 3rem;
+        border-radius: 12px; /* Slightly larger border radius for softer corners */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Deeper shadow for a floating effect */
+        width: 100%; /* Make it responsive */
+        max-width: 500px; /* Max width for better layout */
+    }
+    
+    h1 {
+        text-align: center;
+        color: #000; /* Changed to black */
+        font-size: 45px; /* Same size */
+        font-weight: 700; /* Slightly bolder */
+        margin: 0; /* Remove margin for better centering */
+    }
+    
+    auth-container p {
+        color: #706664;
+        font-size: 18px;
+        margin: 1rem 0 0.5rem; /* Improved spacing */
+    }
+
+    a.button-links {
+        display: inline-block;
+        margin: 1rem 0;
+        padding: 0.5rem 1rem;
+        background-color: #942509;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    a:hover {
+        background-color: #571504;
+        transform: translateY(-2px); /* Slight lift effect on hover */
+    }
+
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+    
+    nav ul li {
+        margin-left: 2rem;
+    }
+    
+    nav ul li a {
+        text-decoration: none;
+        color: #6b6360;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    
+    nav ul li a:hover {
+        color: #942509;
+        background-color: #e9ecef;
+    }
+</style>
+
+<div class="container">
+    <div class="image-side">
+        <h1>Authentication Required</h1>
+    </div>
+    <div class="auth-side">
+        <div class="auth-container">
+            <p>You must be logged in to access this page.</p>
+            <a class="button-links" href="{% url 'register' %}">Register</a>
+            <a class="button-links" href="{% url 'login' %}">Login</a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

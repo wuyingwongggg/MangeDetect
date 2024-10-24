@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detailed View - MangeDetect</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        color: #1a1a1a;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #4a5568;
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        transition: color 0.2s;
+    }
+
+    .back-button:hover {
+        color: #1a202c;
+    }
+
+    .back-button::before {
+        content: "←";
+        font-size: 1.2em;
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .detail-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+        .detail-content {
+            grid-template-columns: 1.2fr 0.8fr;
+        }
+    }
+
+    .image-section {
+        position: relative;
+        height: 400px;
+        background: #f8f9fa;
+    }
+
+    .detail-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .result-section {
+        padding: 2rem;
+    }
+
+    .result-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 1rem;
+        background: #ebf5ff;
+        color: #1e40af;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .result-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 1rem 0;
+    }
+
+    .result-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .result-text {
+        margin: 0;
+        color: #4a5568;
+        font-size: 1.125rem;
+        line-height: 1.5;
+    }
+
+    .timestamp {
+        font-size: 0.875rem;
+        color: #64748b;
+    }
+
+    @media (max-width: 767px) {
+        .image-section {
+            height: 300px;
+        }
+        
+        .result-section {
+            padding: 1.5rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        {% if request.GET.prev_url %}
+        <a href="{{ request.GET.prev_url }}" class="back-button">Back</a>
+        {% else %}
+            <button class="back-button" onclick="history.back()">Back</button>
+        {% endif %}
+
+        <div class="detail-card">
+            <div class="detail-content">
+                <div class="image-section">
+                    <img class="detail-image" src="{{form.initial.image.url}}" alt="Analysis image">
+                </div>
+
+                <div class="result-section">
+                    <div class="result-header">
+                        <div class="status-badge">Analysis Complete</div>
+                        <h1 class="result-title">Analysis Results</h1>
+                    </div>
+
+                    <div class="result-box">
+                        <p class="result-text">{{ form.initial.result }}</p>
+                    </div>
+
+                    <div class="timestamp">
+                        Processed on {% now "F j, Y" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

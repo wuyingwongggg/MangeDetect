@@ -1,0 +1,790 @@
+{% extends 'base.html' %}
+{% load user_tags %}
+{% load static %}
+
+{% block title %}My Account - MangeDetect{% endblock %}
+
+{% block content %}
+
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+    }
+
+    .account-side {
+        display: flex;
+        justify-content: flex-start;  /* Changed to flex-start */
+        align-items: flex-start;
+        background-color: #f0f0f0;
+        padding: 1rem;
+        overflow-y: auto;  /* Added scroll for content overflow */
+    }
+    .account-container {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+    }
+    h1 {
+        margin-top: 0; /* Removed top margin */
+        text-align: left;
+        color: #000000;
+    }
+    h3 {
+        color: #6b6360;
+        padding: 0;
+        margin-top: 15px;
+        margin-bottom: 0;
+    }
+    input {
+        height: 38px; /* Increased height for better usability */
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    button {
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background-color: #942509;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        height: 40px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #571504;
+    }
+    .login-link {
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background-color: #942509;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .login-link:hover {
+        background-color: #571504;
+    }
+    .uploaded-images {
+        margin-top: 2rem;
+        max-height: 300px; /* Set maximum height for scrolling */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+    .back-button {
+        display: inline-block;  
+        padding: 10px 20px;    
+        margin-top: 20px;      
+        background-color: #942509; 
+        color: white;          
+        border-radius: 6px;    
+        text-decoration: none;   
+        transition: background-color 0.3s; 
+        font-size: 16px;       
+    }
+    .back-button:hover {
+        background-color: #6b6360; 
+    }
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+    nav ul li {
+        margin-left: 2rem;
+    }
+    nav ul li a {
+        text-decoration: none;
+        color: #6b6360;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    nav ul li a:hover {
+        color: #942509;
+        background-color: #e9ecef;
+    }
+
+    .nav-tabs .nav-item.show .nav-link, 
+    .nav-tabs .nav-link.active {
+        color: #942509; /* Text color for the active tab */
+        background-color: #fff; /* Background color for the active tab */
+        border-color: #ddd #ddd #fff; /* Border color, removing the bottom border */
+        border-bottom: 2px solid #942509; /* The underline under the active tab */
+    }
+
+    .stat-text {
+        color: grey; /* Set the text color to grey */
+        font-weight: normal; /* Optional: make the text bold for emphasis */
+        font-size: 1.2em; /* Optional: increase font size for better visibility */
+        margin: 10px 0; /* Optional: add some margin for spacing */
+    }
+    
+    .upload-table-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .upload-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        margin-top: 20px;
+    }
+    
+    .upload-table th {
+        padding: 12px;
+        text-align: left;
+        color: #942509;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+
+    }
+    
+    .upload-table td {
+        padding: 12px;
+        background-color: white;
+        vertical-align: middle;
+    }
+    
+    .upload-table tr td:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    
+    .upload-table tr td:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+    
+    .upload-table tbody tr td {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-top: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .upload-table tr td:first-child {
+        border-left: 1px solid #dee2e6;
+    }
+    
+    .upload-table tr td:last-child {
+        border-right: 1px solid #dee2e6;
+    }
+    
+    .upload-image {
+        width: 125px;
+        height: 125px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+    
+    .btn-primary {
+        background-color: #942509;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        color: white;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background-color: #6b6360;
+    }
+    
+    .result-text {
+        color: #333;
+        max-width: 400px;
+    }
+    
+    /* Dropdown styles */
+    .sort-dropdown, .filter-dropdown, .date-range-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .sort-button, .filter-button {
+        background-color: white;
+        color: black;
+        margin: 0px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+    
+    .sort-button:hover, .filter-button:hover {
+        background-color: #e9ecef;
+        border-color: #942509;
+        color: #942509;
+    }
+
+    .sort-dropdown-content, .filter-dropdown-content, .date-range-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        z-index: 1;
+        min-width: 160px;
+        border-radius: 4px;
+    }
+    
+    .sort-dropdown.active .sort-dropdown-content,
+    .filter-dropdown.active .filter-dropdown-content,
+    .date-range-dropdown.active .date-range-content {
+        display: block;
+    }
+    
+    .sort-dropdown-content a, .filter-dropdown-content a {
+        color: black;
+        padding: 8px 12px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.3s;
+        font-weight: normal;
+    }
+    
+    .sort-dropdown-content a:hover, .filter-dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+    
+    .current-sort, .current-filter {
+        font-weight: bold;
+        color: #942509;
+        background-color: #e7f3ff;
+    }
+    
+    /* Date range specific styles */
+    .date-range-content {
+        display: none;
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        z-index: 1;
+        padding: 15px;
+        min-width: 250px;
+        border-radius: 4px;
+    }
+    
+    .date-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .date-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .date-input-group label {
+        font-size: 0.9em;
+        color: #666;
+    }
+    
+    .date-input-group input[type="date"] {
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .date-range-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .date-range-buttons button.cancel {
+        color: black; 
+    }
+
+    .date-range-buttons button {
+        flex: 1;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .date-range-buttons button.apply {
+        background-color: #942509;
+        color: white;
+        border-color: #942509;
+    }
+    
+    .date-range-buttons button:hover {
+        background-color: #6b6360;
+        border-color: #6b6360;
+        color: white;
+    }
+    
+    .active-date-range {
+        font-size: 0.8em;
+        color: #942509;
+        margin-top: 5px;
+    }
+    
+    /* Pagination styles */
+    .pagination-container a {
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        background-color: #942509;
+        color: white;
+        transition: background-color 0.3s;
+    }
+    
+    .pagination-container a:hover {
+        background-color: #6b6360;
+    }
+    
+    .current-page {
+        color: #333;
+        border: 1px solid #dee2e6;
+    }
+    
+    /* Scrollbar styles */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background-color: #942509;
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 10px;
+    }
+    
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #942509 #f1f1f1;
+    }
+
+    .badge {
+        font-size: 0.9em;
+        padding: 10px 20px;
+        border-radius: 7px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .badge-normal {
+        background-color: green;
+    }
+
+    .badge-mange {
+        background-color: red;
+    }
+</style>
+
+
+<div class="account-side">
+    
+    <div class="account-container">
+        <h1>Account</h1>
+        
+        <!-- Tabs for user's account -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">View History</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="update-tab" data-toggle="tab" href="#update" role="tab" aria-controls="update" aria-selected="true">Update Details</a>
+            </li>
+
+            <!-- Admin Tab for staff/admins only -->
+            {% if user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" id="admin-tab" data-toggle="tab" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Admin Dashboard</a>
+            </li>
+            {% endif %}
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Update Details Tab -->
+            <div class="tab-pane fade show active" id="update" role="tabpanel" aria-labelledby="update-tab">
+                <form method="post">{% csrf_token %}
+                    {% for field in account_form %}
+                        <h3>{{ field.label }}</h3>
+                        {% if field.name == "email" %}
+                            <p>{{ field.value }}</p>  <!-- Display email as plain text -->
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p style="color: red;">{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    <button type="submit">Save changes</button>
+                </form>
+                
+                <div class="d-flex flex-column">
+                    <a class="login-link" style="width: 180px" href="{% url 'password_change' %}">Change password</a>
+                </div>
+            </div>
+            
+            <!-- Personal History Tab -->
+            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <div class="upload-table-container">
+                    {% if uploaded_images %}
+                        <table class="upload-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Image
+                                    </th>
+                                    <th>
+                                        Result
+                                        <div class="filter-dropdown">
+                                            <button class="filter-button" onclick="toggleFilter(event, this)">
+                                                <i class="fas fa-filter"></i><span class="filter-asterisk"></span>
+                                            </button>
+                                            <div class="filter-dropdown-content">
+                                                <a href="?filter=all" {% if not filter or filter == 'all' %}class="current-filter"{% endif %}>
+                                                    <i class="fas fa-list"></i> Show All
+                                                </a>
+                                                <a href="?filter=mange" {% if filter == 'mange' %}class="current-filter"{% endif %}>
+                                                    <i class="fas fa-exclamation-circle"></i> Mange Only
+                                                </a>
+                                                <a href="?filter=normal" {% if filter == 'normal' %}class="current-filter"{% endif %}>
+                                                    <i class="fas fa-check-circle"></i> Normal Only
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        Date
+                                        <div class="sort-dropdown">
+                                            <button class="sort-button" onclick="toggleSort(event, this)">
+                                                <i class="fas fa-sort"></i><span class="sort-asterisk"></span>
+                                            </button>
+                                            <div class="sort-dropdown-content">
+                                                <a href="?sort=default" {% if not sort %}class="current-sort"{% endif %}>
+                                                    <i class="fas fa-times"></i> Default Order
+                                                </a>
+                                                <a href="?sort=date_uploaded" {% if sort == 'date_uploaded' %}class="current-sort"{% endif %}>
+                                                    <i class="fas fa-sort-up"></i> Sort Oldest
+                                                </a>
+                                                <a href="?sort=-date_uploaded" {% if sort == '-date_uploaded' %}class="current-sort"{% endif %}>
+                                                    <i class="fas fa-sort-down"></i> Sort Newest
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <!-- Date picker filter -->
+                                        <div class="date-range-dropdown">
+                                            <button class="filter-button" onclick="toggleDateRange(event, this)">
+                                                <i class="fas fa-calendar-alt"></i><span class="date-asterisk"></span>
+                                            </button>
+                                            <div class="date-range-content">
+                                                <div class="date-inputs">
+                                                    <div class="date-input-group">
+                                                        <label for="start_date">Start Date</label>
+                                                        <input type="date" id="start_date" name="start_date" 
+                                                               value="{{ start_date|date:'Y-m-d' }}"
+                                                               max="{{ today|date:'Y-m-d' }}">
+                                                    </div>
+                                                    <div class="date-input-group">
+                                                        <label for="end_date">End Date</label>
+                                                        <input type="date" id="end_date" name="end_date" 
+                                                               value="{{ end_date|date:'Y-m-d' }}"
+                                                               max="{{ today|date:'Y-m-d' }}">
+                                                    </div>
+                                                </div>
+                                                <div class="date-range-buttons">
+                                                    <button class="cancel" onclick="clearDateRange()">Clear</button>
+                                                    <button class="apply" onclick="applyDateRange()">Apply</button>
+                                                </div>
+                                                {% if start_date and end_date %}
+                                                <div class="active-date-range">
+                                                    Filtered: {{ start_date|date:"M d, Y" }} - {{ end_date|date:"M d, Y" }}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>                                         
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for post in uploaded_images %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'image_recognition:detail' post.slug %}?prev_url={{ request.get_full_path }}">
+                                                <img class="upload-image" src="{{ post.image.url }}" alt="Uploaded image" loading="lazy">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="result-text text-center">
+                                                {% if "Mange" in post.result %}
+                                                    <span class="badge badge-mange">{{ post.result }}</span>  {# Display the entire result in the badge #}
+                                                {% else %}
+                                                    <span class="badge badge-normal">{{ post.result }}</span>  {# Display the entire result in the badge #}
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>{{ post.date_uploaded }}</td>
+                                        <td>
+                                            <a href="{% url 'image_recognition:edit' post.slug %}?prev_url={{ request.get_full_path }}" class="btn btn-primary btn-sm">View</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination Code-->
+                        {% if uploaded_images.paginator.num_pages > 1 %}
+                        <div class="pagination-container" style="display: flex; justify-content: center; margin-top: 20px; gap: 10px;">
+                            {% if uploaded_images.has_previous %}
+                                <a href="{{ request.path }}?page=1{% if sort %}&sort={{ sort }}{% endif %}{% if filter %}&filter={{ filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" 
+                                class="btn btn-primary btn-sm">&laquo; First</a>
+                                <a href="{{ request.path }}?page={{ uploaded_images.previous_page_number }}{% if sort %}&sort={{ sort }}{% endif %}{% if filter %}&filter={{ filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" 
+                                class="btn btn-primary btn-sm">Previous</a>
+                            {% endif %}
+
+                            <span class="current-page" style="padding: 5px 10px; background-color: #f8f9fa; border-radius: 4px;">
+                                Page {{ uploaded_images.number }} of {{ uploaded_images.paginator.num_pages }}
+                            </span>
+
+                            {% if uploaded_images.has_next %}
+                                <a href="{{ request.path }}?page={{ uploaded_images.next_page_number }}{% if sort %}&sort={{ sort }}{% endif %}{% if filter %}&filter={{ filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" 
+                                class="btn btn-primary btn-sm">Next</a>
+                                <a href="{{ request.path }}?page={{ uploaded_images.paginator.num_pages }}{% if sort %}&sort={{ sort }}{% endif %}{% if filter %}&filter={{ filter }}{% endif %}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" 
+                                class="btn btn-primary btn-sm">Last &raquo;</a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        {% else %}
+                            <div class="alert alert-info text-center">
+                                You have no images uploaded. Create a post <a href="{% url 'image_recognition:upload' %}">here</a>.
+                            </div>
+                        {% endif %}
+                </div>
+            </div>
+
+            <!-- Admin Dashboard Tab (only visible to admin users) -->
+            {% if user.is_staff %}
+            <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="admin-tab">
+                <h3>Admin Dashboard</h3>
+                
+                <b><p>This page should only be accessible and seen by a staff/admin user. If not, please contact the website administrators.</p></b>
+                
+                <div class="user-count stat-text">           
+                    Registered Users: {% get_user_count %} <br>
+                    Total Uploaded Images: {% get_image_count %}
+                </div>
+
+                <div class="rate-limiter">
+
+                </div>
+
+                Access the Django admin dashboard to manage the website. <br>
+                <a href="/admin/" class="login-link">Go to Admin Dashboard</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Save the active tab in local storage
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var activeTab = $(e.target).attr('href'); // Get the href of the active tab
+        localStorage.setItem('activeTab', activeTab); // Store it in local storage
+    });
+
+    // Retrieve the active tab from local storage and set it as the active tab
+    var activeTab = localStorage.getItem('activeTab');
+    if (activeTab) {
+        $('#myTab a[href="' + activeTab + '"]').tab('show'); // Show the active tab
+    }
+
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.sort-dropdown') && 
+            !event.target.closest('.filter-dropdown') && 
+            !event.target.closest('.date-range-dropdown')) {
+            document.querySelectorAll('.sort-dropdown, .filter-dropdown, .date-range-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        }
+    });
+
+    function toggleSort(event, button) {
+        event.stopPropagation();
+        const dropdown = button.closest('.sort-dropdown');
+        document.querySelectorAll('.sort-dropdown, .filter-dropdown, .date-range-dropdown').forEach(other => {
+            if (other !== dropdown) {
+                other.classList.remove('active');
+            }
+        });
+        dropdown.classList.toggle('active');
+    }
+
+    function toggleFilter(event, button) {
+        event.stopPropagation();
+        const dropdown = button.closest('.filter-dropdown');
+        document.querySelectorAll('.sort-dropdown, .filter-dropdown, .date-range-dropdown').forEach(other => {
+            if (other !== dropdown) {
+                other.classList.remove('active');
+            }
+        });
+        dropdown.classList.toggle('active');
+    }
+
+    function toggleDateRange(event, button) {
+        event.stopPropagation();
+        const dropdown = button.closest('.date-range-dropdown');
+        document.querySelectorAll('.sort-dropdown, .filter-dropdown, .date-range-dropdown').forEach(other => {
+            if (other !== dropdown) {
+                other.classList.remove('active');
+            }
+        });
+        dropdown.classList.toggle('active');
+    }
+
+    // Helper function to maintain existing URL parameters
+    function updateUrlWithParams(newParams) {
+        const currentUrl = new URL(window.location.href);
+        Object.entries(newParams).forEach(([key, value]) => {
+            if (value === null) {
+                currentUrl.searchParams.delete(key);
+            } else {
+                currentUrl.searchParams.set(key, value);
+            }
+        });
+        return currentUrl.toString();
+    }
+
+    function applyDateRange() {
+        const startDate = document.getElementById('start_date').value;
+        const endDate = document.getElementById('end_date').value;
+        
+        if (!startDate || !endDate) {
+            alert('Please select both start and end dates');
+            return;
+        }
+        
+        if (new Date(startDate) > new Date(endDate)) {
+            alert('Start date must be before end date');
+            return;
+        }
+
+        window.location.href = updateUrlWithParams({
+            'start_date': startDate,
+            'end_date': endDate
+        });
+    }
+
+    function clearDateRange() {
+        window.location.href = updateUrlWithParams({
+            'start_date': null,
+            'end_date': null
+        });
+    }
+
+    // 
+    document.querySelectorAll('.sort-dropdown-content a, .filter-dropdown-content a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const param = this.getAttribute('href').split('=')[0].substring(1);
+            const value = this.getAttribute('href').split('=')[1];
+            
+            const params = {};
+            if (value !== 'all' || param !== 'filter') {
+                params[param] = value;
+            } else {
+                params['filter'] = null;
+            }
+            
+            window.location.href = updateUrlWithParams(params);
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to add an asterisk if filter/sort is not default
+        function updateFilterAsterisk() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const filterValue = urlParams.get('filter');
+            const filterAsterisk = document.querySelector('.filter-dropdown .filter-asterisk');
+            
+            if (filterAsterisk) {
+                filterAsterisk.textContent = (!filterValue || filterValue === 'all') ? '' : '*';
+            }
+        }
+    
+        function updateDateSortAsterisk() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortValue = urlParams.get('sort');
+            const dateSortAsterisk = document.querySelector('.sort-asterisk');
+            
+            if (dateSortAsterisk) {
+                dateSortAsterisk.textContent = (!sortValue || sortValue === 'default') ? '' : '*';
+            }
+        }
+    
+        function updateAuthorSortAsterisk() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortValue = urlParams.get('sort');
+            const authorSortAsterisk = document.querySelector('.author-asterisk');
+            
+            if (authorSortAsterisk) {
+                // Check if the sort parameter starts with 'author' or '-author'
+                const isAuthorSort = sortValue && (sortValue === 'author' || sortValue === '-author');
+                authorSortAsterisk.textContent = isAuthorSort ? '*' : '';
+            }
+        }
+    
+        function updateDateRangeAsterisk() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const startDate = urlParams.get('start_date');
+            const endDate = urlParams.get('end_date');
+            const dateAsteriskSpan = document.querySelector('.date-range-dropdown .date-asterisk');
+        
+            if (dateAsteriskSpan) {
+                dateAsteriskSpan.textContent = (startDate || endDate) ? '*' : '';
+            }
+        }
+    
+        // Call all update functions independently
+        updateFilterAsterisk();
+        updateDateSortAsterisk();
+        updateAuthorSortAsterisk();
+        updateDateRangeAsterisk();
+    });
+
+    // Font Awesome inclusion for icons
+    const fontAwesome = document.createElement('link');
+    fontAwesome.rel = 'stylesheet';
+    fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css';
+    document.head.appendChild(fontAwesome);
+</script>
+
+
+{% endblock content %}
