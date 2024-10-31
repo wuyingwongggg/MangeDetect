@@ -98,6 +98,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# Change database from AWS to Local
+# Use 'default' for AWS RDS (this is mysql) and use 'sqlite' for local database (this is sqlite).
+DATABASE_TO_USE = 'default'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -106,8 +110,16 @@ DATABASES = {
         'PASSWORD': '12345678',
         'HOST': 'myrds.cncm4460kdqi.ap-southeast-2.rds.amazonaws.com',
         'PORT': '3306',
+    },
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'mangedetect-local-db.sqlite3',
     }
 }
+
+# Select the database dynamically
+DATABASES['default'] = DATABASES[DATABASE_TO_USE]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

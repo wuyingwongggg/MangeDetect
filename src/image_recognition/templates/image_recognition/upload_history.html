@@ -335,6 +335,118 @@
     .badge-mange {
         background-color: red;
     }
+
+    /* Responsive dropdown positioning */
+    @media screen and (max-width: 768px) {
+        .sort-dropdown-content,
+        .filter-dropdown-content,
+        .date-range-content {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .date-range-content {
+            padding: 20px;
+            background: white;
+        }
+    }
+
+    /* Responsive pagination */
+    @media screen and (max-width: 768px) {
+        .pagination-container {
+            flex-wrap: wrap;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .pagination-container a {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+    }
+
+    /* Action buttons */
+    @media screen and (max-width: 768px) {
+        .btn-primary {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            margin: 5px 0;
+        }
+    }
+
+    /* Filter controls container */
+    .filter-controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+        padding: 10px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .filter-controls {
+            justify-content: space-between;
+        }
+
+        .filter-controls button {
+            padding: 10px;
+            font-size: 16px;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .upload-table {
+            display: block;
+        }
+
+        .upload-table thead {
+            display: none; /* Hide table headers on mobile */
+        }
+
+        .upload-table tbody, .upload-table tr, .upload-table td {
+            display: block;
+            width: 100%;
+        }
+
+        .upload-table tr {
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .upload-table td {
+            display: flex;
+            padding: 0.5rem;
+            text-align: left;
+            border: none;
+            position: relative;
+        }
+
+        .upload-table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            width: 120px;
+            min-width: 120px;
+            color: #942509;
+            padding-right: 1rem;
+        }
+
+        .upload-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    }
 </style>
 
 <h1 class="text-center">Upload History</h1>
@@ -455,7 +567,7 @@
                             {% endif %}
                         </div>
                     </td>
-                    <td>{{ post.author }}</td>
+                    <td>{{ post.author.username }}</td>
                     <td>{{ post.date_uploaded }}</td>
                     <td>
                         {% comment %} {% if post.author == request.user %} {% endcomment %}
